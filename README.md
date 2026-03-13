@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # amptrail_adminpanel
 
 A new Flutter project.
@@ -18,3 +19,6 @@ samples, guidance on mobile development, and a full API reference.
 =======
 # admin_panel
 >>>>>>> 0311f385ac29a24fcdd00ae7af1c4af7b3c12e33
+=======
+Station admin panel for adding the stations and controll access for owners
+>>>>>>> 1ca843fd0fb4359ce763162b860f7bde04765b72
