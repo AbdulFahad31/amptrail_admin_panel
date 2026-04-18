@@ -1,24 +1,2 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# amptrail_adminpanel
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-=======
-# admin_panel
->>>>>>> 0311f385ac29a24fcdd00ae7af1c4af7b3c12e33
-=======
-Station admin panel for adding the stations and controll access for owners
->>>>>>> 1ca843fd0fb4359ce763162b860f7bde04765b72
+# amptrail_admin_panel
+AmpTrail Admin Panel is a Flutter-powered web dashboard for managing EV charging infrastructure. It enables real-time monitoring of stations, slot availability, bookings, and user activity, with Firebase integration ensuring scalability, security, and efficient operations.
