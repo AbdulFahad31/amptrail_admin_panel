@@ -44,4 +44,22 @@ class FirestoreService {
         .map((doc) => Station.fromMap(doc.id, doc.data()))
         .toList());
   }
+
+  // Get booking history for owner
+  Future<List<dynamic>> getBookingHistory(String ownerId) async {
+    final stationSnap = await _db.collection('stations').where('ownerId', isEqualTo: ownerId).get();
+    final stationIds = stationSnap.docs.map((doc) => doc.id).toList();
+
+    if (stationIds.isEmpty) return [];
+
+    List<dynamic> allBookings = [];
+    for (var i = 0; i < stationIds.length; i += 10) {
+      final chunk = stationIds.sublist(i, i + 10 > stationIds.length ? stationIds.length : i + 10);
+      final bookingsSnap = await _db.collection('bookings').where('stationId', whereIn: chunk).get();
+      // We will parse this in the screen using fromFirestore
+      allBookings.addAll(bookingsSnap.docs);
+    }
+
+    return allBookings;
+  }
 }

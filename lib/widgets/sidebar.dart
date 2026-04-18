@@ -6,6 +6,7 @@ import '../screens/login_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/add_station_screen.dart';
 import '../screens/station_list_screen.dart';
+import '../screens/history_screen.dart';
 
 class Sidebar extends StatelessWidget {
   final String activeRoute;
@@ -120,6 +121,23 @@ class Sidebar extends StatelessWidget {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (_, __, ___) => const StationListScreen(),
+                          transitionDuration: Duration.zero,
+                        ),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(height: 8),
+                _SidebarItem(
+                  title: 'History',
+                  icon: Icons.assignment_rounded,
+                  isActive: activeRoute == 'history',
+                  onTap: () {
+                    if (activeRoute != 'history') {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => const HistoryScreen(),
                           transitionDuration: Duration.zero,
                         ),
                       );
