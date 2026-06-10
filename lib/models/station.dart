@@ -26,7 +26,7 @@ class Station {
     required this.totalPorts,
     required this.availablePorts,
     required this.pricePerUnit,
-    this.rating = 4.5, // Default rating for new stations
+    this.rating = 4.5,
     this.createdAt,
     required this.ownerId,
   });
@@ -34,15 +34,19 @@ class Station {
   factory Station.fromMap(String id, Map<String, dynamic> data) {
     return Station(
       id: id,
-      stationName: (data['stationName'] ?? data['name'])?.toString() ?? 'Unnamed Station',
+      stationName:
+          (data['stationName'] ?? data['name'])?.toString() ??
+          'Unnamed Station',
       ownerName: data['ownerName']?.toString() ?? 'App Admin',
       address: data['address']?.toString() ?? 'Unknown Address',
       latitude: double.tryParse(data['latitude']?.toString() ?? '0') ?? 0.0,
       longitude: double.tryParse(data['longitude']?.toString() ?? '0') ?? 0.0,
       chargerType: data['chargerType']?.toString() ?? 'Type2',
       totalPorts: int.tryParse(data['totalPorts']?.toString() ?? '0') ?? 1,
-      availablePorts: int.tryParse(data['availablePorts']?.toString() ?? '0') ?? 1,
-      pricePerUnit: double.tryParse(data['pricePerUnit']?.toString() ?? '0') ?? 0.0,
+      availablePorts:
+          int.tryParse(data['availablePorts']?.toString() ?? '0') ?? 1,
+      pricePerUnit:
+          double.tryParse(data['pricePerUnit']?.toString() ?? '0') ?? 0.0,
       rating: double.tryParse(data['rating']?.toString() ?? '0') ?? 4.5,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       ownerId: data['ownerId']?.toString() ?? 'admin',
@@ -52,7 +56,7 @@ class Station {
   Map<String, dynamic> toMap() {
     return {
       'stationName': stationName,
-      'name': stationName, // Add this so the mobile app reads it correctly
+      'name': stationName,
       'ownerName': ownerName,
       'address': address,
       'latitude': latitude,

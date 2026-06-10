@@ -13,6 +13,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  static final _emailPattern = RegExp(
+    r"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+  );
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
@@ -30,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
+    if (!_emailPattern.hasMatch(email)) {
       setState(() {
         _errorMessage = 'Please enter a valid email address.';
       });
@@ -43,10 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await _authService.signInWithEmailPassword(
-        email,
-        password,
-      );
+      await _authService.signInWithEmailPassword(email, password);
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _errorMessage = e.message ?? 'An error occurred during login.';
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
         _errorMessage = 'An unexpected error occurred.';
       });
@@ -67,6 +68,13 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -93,17 +101,13 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Logo Section
                 Center(
                   child: Container(
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primary,
-                        width: 2.5,
-                      ),
+                      border: Border.all(color: AppColors.primary, width: 2.5),
                     ),
                     child: const Icon(
                       Icons.bolt,
@@ -135,7 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Error Message
                 if (_errorMessage.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -151,26 +154,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                // Email Input
                 TextField(
                   controller: _emailController,
                   style: const TextStyle(color: AppColors.textMain),
-                  decoration: _buildInputDecoration('Email', Icons.email_outlined),
+                  decoration: _buildInputDecoration(
+                    'Email',
+                    Icons.email_outlined,
+                  ),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
-                
-                // Password Input
+
                 TextField(
                   controller: _passwordController,
                   style: const TextStyle(color: AppColors.textMain),
-                  decoration: _buildInputDecoration('Password', Icons.lock_outline),
+                  decoration: _buildInputDecoration(
+                    'Password',
+                    Icons.lock_outline,
+                  ),
                   obscureText: true,
                   onSubmitted: (_) => _login(),
                 ),
                 const SizedBox(height: 32),
-                
-                // Login Button
+
                 ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
@@ -201,8 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 const SizedBox(height: 24),
-                
-                // Switch to Sign up
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -214,7 +219,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const SignupScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const SignupScreen(),
+                          ),
                         );
                       },
                       child: const Text(
@@ -248,7 +255,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.5), width: 1.5),
+        borderSide: BorderSide(
+          color: AppColors.primary.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
       ),
     );
   }

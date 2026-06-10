@@ -25,8 +25,8 @@ class _AddStationScreenState extends State<AddStationScreen> {
   final _totalPortsController = TextEditingController();
   final _priceController = TextEditingController();
 
-  String _chargerType = 'Type2'; // Default
-  final List<String> _chargerTypes = ['Type2', 'DC Fast'];
+  String _chargerType = 'Type2';
+  final List<String> _chargerTypes = const ['Type2', 'DC Fast'];
 
   final _authService = AuthService();
   final _firestoreService = FirestoreService();
@@ -44,7 +44,7 @@ class _AddStationScreenState extends State<AddStationScreen> {
       _longitudeController.text = station.longitude.toString();
       _totalPortsController.text = station.totalPorts.toString();
       _priceController.text = station.pricePerUnit.toString();
-      
+
       if (_chargerTypes.contains(station.chargerType)) {
         _chargerType = station.chargerType;
       }
@@ -62,7 +62,7 @@ class _AddStationScreenState extends State<AddStationScreen> {
         throw Exception('User not logged in');
       }
 
-      int totalPorts = int.parse(_totalPortsController.text);
+      final totalPorts = int.parse(_totalPortsController.text);
 
       final station = Station(
         id: widget.stationToEdit != null ? widget.stationToEdit!.id : '',
@@ -73,7 +73,9 @@ class _AddStationScreenState extends State<AddStationScreen> {
         longitude: double.parse(_longitudeController.text.trim()),
         chargerType: _chargerType,
         totalPorts: totalPorts,
-        availablePorts: widget.stationToEdit != null ? widget.stationToEdit!.availablePorts : totalPorts,
+        availablePorts: widget.stationToEdit != null
+            ? widget.stationToEdit!.availablePorts
+            : totalPorts,
         pricePerUnit: double.parse(_priceController.text.trim()),
         rating: widget.stationToEdit?.rating ?? 4.5,
         createdAt: widget.stationToEdit?.createdAt,
@@ -89,24 +91,27 @@ class _AddStationScreenState extends State<AddStationScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(widget.stationToEdit != null ? 'Station updated successfully!' : 'Station added successfully!'),
+          content: Text(
+            widget.stationToEdit != null
+                ? 'Station updated successfully!'
+                : 'Station added successfully!',
+          ),
           backgroundColor: AppColors.primary,
         ),
       );
 
-      // If it's editing, go back to manage stations
       if (widget.stationToEdit != null) {
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
-            pageBuilder: (_, __, ___) => const StationListScreen(),
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const StationListScreen(),
             transitionDuration: Duration.zero,
           ),
         );
         return;
       }
 
-      // Clear the form for new additions
       _stationNameController.clear();
       _ownerNameController.clear();
       _addressController.clear();
@@ -117,7 +122,6 @@ class _AddStationScreenState extends State<AddStationScreen> {
       setState(() {
         _chargerType = 'Type2';
       });
-
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -132,12 +136,28 @@ class _AddStationScreenState extends State<AddStationScreen> {
   }
 
   @override
+  void dispose() {
+    _stationNameController.dispose();
+    _ownerNameController.dispose();
+    _addressController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
+    _totalPortsController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Row(
         children: [
-          Sidebar(activeRoute: widget.stationToEdit != null ? 'manage_stations' : 'add_station'),
+          Sidebar(
+            activeRoute: widget.stationToEdit != null
+                ? 'manage_stations'
+                : 'add_station',
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(32.0),
@@ -145,7 +165,9 @@ class _AddStationScreenState extends State<AddStationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.stationToEdit != null ? 'Edit Station' : 'Add New Station',
+                    widget.stationToEdit != null
+                        ? 'Edit Station'
+                        : 'Add New Station',
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -173,26 +195,21 @@ class _AddStationScreenState extends State<AddStationScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              _ResponsiveFieldRow(
                                 children: [
-                                  Expanded(
-                                    child: _buildTextField(
-                                      controller: _stationNameController,
-                                      labelText: 'Station Name',
-                                      icon: Icons.ev_station,
-                                      validator: (value) =>
-                                          value!.isEmpty ? 'Required' : null,
-                                    ),
+                                  _buildTextField(
+                                    controller: _stationNameController,
+                                    labelText: 'Station Name',
+                                    icon: Icons.ev_station,
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Required' : null,
                                   ),
-                                  const SizedBox(width: 24),
-                                  Expanded(
-                                    child: _buildTextField(
-                                      controller: _ownerNameController,
-                                      labelText: 'Owner Name',
-                                      icon: Icons.person,
-                                      validator: (value) =>
-                                          value!.isEmpty ? 'Required' : null,
-                                    ),
+                                  _buildTextField(
+                                    controller: _ownerNameController,
+                                    labelText: 'Owner Name',
+                                    icon: Icons.person,
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Required' : null,
                                   ),
                                 ],
                               ),
@@ -205,38 +222,53 @@ class _AddStationScreenState extends State<AddStationScreen> {
                                     value!.isEmpty ? 'Required' : null,
                               ),
                               const SizedBox(height: 24),
-                              Row(
+                              _ResponsiveFieldRow(
                                 children: [
-                                  Expanded(
-                                    child: _buildTextField(
-                                      controller: _latitudeController,
-                                      labelText: 'Latitude',
-                                      icon: Icons.location_on,
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) return 'Required';
-                                        final numValue = double.tryParse(value);
-                                        if (numValue == null) return 'Invalid number';
-                                        if (numValue < -90 || numValue > 90) return 'Must be between -90 and 90';
-                                        return null;
-                                      },
-                                    ),
+                                  _buildTextField(
+                                    controller: _latitudeController,
+                                    labelText: 'Latitude',
+                                    icon: Icons.location_on,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                          signed: true,
+                                        ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Required';
+                                      }
+                                      final numValue = double.tryParse(value);
+                                      if (numValue == null) {
+                                        return 'Invalid number';
+                                      }
+                                      if (numValue < -90 || numValue > 90) {
+                                        return 'Must be between -90 and 90';
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  const SizedBox(width: 24),
-                                  Expanded(
-                                    child: _buildTextField(
-                                      controller: _longitudeController,
-                                      labelText: 'Longitude',
-                                      icon: Icons.location_on,
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) return 'Required';
-                                        final numValue = double.tryParse(value);
-                                        if (numValue == null) return 'Invalid number';
-                                        if (numValue < -180 || numValue > 180) return 'Must be between -180 and 180';
-                                        return null;
-                                      },
-                                    ),
+                                  _buildTextField(
+                                    controller: _longitudeController,
+                                    labelText: 'Longitude',
+                                    icon: Icons.location_on,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                          signed: true,
+                                        ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Required';
+                                      }
+                                      final numValue = double.tryParse(value);
+                                      if (numValue == null) {
+                                        return 'Invalid number';
+                                      }
+                                      if (numValue < -180 || numValue > 180) {
+                                        return 'Must be between -180 and 180';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ],
                               ),
@@ -244,27 +276,34 @@ class _AddStationScreenState extends State<AddStationScreen> {
                               DropdownButtonFormField<String>(
                                 initialValue: _chargerType,
                                 dropdownColor: AppColors.surface,
-                                style: const TextStyle(color: AppColors.textMain),
+                                style: const TextStyle(
+                                  color: AppColors.textMain,
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Charger Type',
                                   labelStyle: const TextStyle(
-                                      color: AppColors.textSecondary),
+                                    color: AppColors.textSecondary,
+                                  ),
                                   prefixIcon: const Icon(
-                                      Icons.electrical_services,
-                                      color: AppColors.textSecondary),
+                                    Icons.electrical_services,
+                                    color: AppColors.textSecondary,
+                                  ),
                                   filled: true,
                                   fillColor: AppColors.background,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                     borderSide: const BorderSide(
-                                        color: Colors.transparent),
+                                      color: Colors.transparent,
+                                    ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                     borderSide: BorderSide(
-                                        color: AppColors.primary
-                                            .withValues(alpha: 0.5),
-                                        width: 1.5),
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                      width: 1.5,
+                                    ),
                                   ),
                                 ),
                                 items: _chargerTypes.map((type) {
@@ -282,36 +321,42 @@ class _AddStationScreenState extends State<AddStationScreen> {
                                 },
                               ),
                               const SizedBox(height: 24),
-                              Row(
+                              _ResponsiveFieldRow(
                                 children: [
-                                  Expanded(
-                                    child: _buildTextField(
-                                      controller: _totalPortsController,
-                                      labelText: 'Total Charging Ports',
-                                      icon: Icons.onetwothree,
-                                      keyboardType: TextInputType.number,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) return 'Required';
-                                        final intValue = int.tryParse(value);
-                                        if (intValue == null || intValue <= 0) return 'Must be > 0';
-                                        return null;
-                                      },
-                                    ),
+                                  _buildTextField(
+                                    controller: _totalPortsController,
+                                    labelText: 'Total Charging Ports',
+                                    icon: Icons.onetwothree,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Required';
+                                      }
+                                      final intValue = int.tryParse(value);
+                                      if (intValue == null || intValue <= 0) {
+                                        return 'Must be > 0';
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  const SizedBox(width: 24),
-                                  Expanded(
-                                    child: _buildTextField(
-                                      controller: _priceController,
-                                      labelText: 'Price per kWh',
-                                      icon: Icons.attach_money,
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) return 'Required';
-                                        final numValue = double.tryParse(value);
-                                        if (numValue == null || numValue < 0) return 'Invalid price';
-                                        return null;
-                                      },
-                                    ),
+                                  _buildTextField(
+                                    controller: _priceController,
+                                    labelText: 'Price per kWh',
+                                    icon: Icons.attach_money,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Required';
+                                      }
+                                      final numValue = double.tryParse(value);
+                                      if (numValue == null || numValue < 0) {
+                                        return 'Invalid price';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ],
                               ),
@@ -323,7 +368,8 @@ class _AddStationScreenState extends State<AddStationScreen> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primary,
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 18),
+                                      vertical: 18,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -339,7 +385,9 @@ class _AddStationScreenState extends State<AddStationScreen> {
                                           ),
                                         )
                                       : Text(
-                                          widget.stationToEdit != null ? 'Save Changes' : 'Add Station',
+                                          widget.stationToEdit != null
+                                              ? 'Save Changes'
+                                              : 'Add Station',
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -386,7 +434,9 @@ class _AddStationScreenState extends State<AddStationScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-              color: AppColors.primary.withValues(alpha: 0.5), width: 1.5),
+            color: AppColors.primary.withValues(alpha: 0.5),
+            width: 1.5,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -399,6 +449,39 @@ class _AddStationScreenState extends State<AddStationScreen> {
       ),
       keyboardType: keyboardType,
       validator: validator,
+    );
+  }
+}
+
+class _ResponsiveFieldRow extends StatelessWidget {
+  final List<Widget> children;
+
+  const _ResponsiveFieldRow({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 720) {
+          return Column(
+            children: [
+              for (var i = 0; i < children.length; i++) ...[
+                children[i],
+                if (i != children.length - 1) const SizedBox(height: 24),
+              ],
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            for (var i = 0; i < children.length; i++) ...[
+              Expanded(child: children[i]),
+              if (i != children.length - 1) const SizedBox(width: 24),
+            ],
+          ],
+        );
+      },
     );
   }
 }

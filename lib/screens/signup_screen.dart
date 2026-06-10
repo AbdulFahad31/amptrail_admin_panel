@@ -13,6 +13,10 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  static final _emailPattern = RegExp(
+    r"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+  );
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -32,7 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
+    if (!_emailPattern.hasMatch(email)) {
       setState(() {
         _errorMessage = 'Please enter a valid email address.';
       });
@@ -61,7 +65,6 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       await _authService.signUpWithEmailPassword(email, password);
       if (!mounted) return;
-      // Authentication stream in main.dart will push them to Dashboard automatically
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const DashboardScreen()),
@@ -70,7 +73,7 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         _errorMessage = e.message ?? 'An error occurred during sign up.';
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
         _errorMessage = 'An unexpected error occurred.';
       });
@@ -81,6 +84,14 @@ class _SignupScreenState extends State<SignupScreen> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -107,17 +118,13 @@ class _SignupScreenState extends State<SignupScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Logo Section
                 Center(
                   child: Container(
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primary,
-                        width: 2.5,
-                      ),
+                      border: Border.all(color: AppColors.primary, width: 2.5),
                     ),
                     child: const Icon(
                       Icons.bolt,
@@ -148,7 +155,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Error Message
                 if (_errorMessage.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -164,35 +170,40 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
 
-                // Email Input
                 TextField(
                   controller: _emailController,
                   style: const TextStyle(color: AppColors.textMain),
-                  decoration: _buildInputDecoration('Email Address', Icons.email_outlined),
+                  decoration: _buildInputDecoration(
+                    'Email Address',
+                    Icons.email_outlined,
+                  ),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
 
-                // Password Input
                 TextField(
                   controller: _passwordController,
                   style: const TextStyle(color: AppColors.textMain),
-                  decoration: _buildInputDecoration('Password', Icons.lock_outline),
+                  decoration: _buildInputDecoration(
+                    'Password',
+                    Icons.lock_outline,
+                  ),
                   obscureText: true,
                 ),
                 const SizedBox(height: 16),
-                
-                // Confirm Password Input
+
                 TextField(
                   controller: _confirmPasswordController,
                   style: const TextStyle(color: AppColors.textMain),
-                  decoration: _buildInputDecoration('Confirm Password', Icons.lock_reset),
+                  decoration: _buildInputDecoration(
+                    'Confirm Password',
+                    Icons.lock_reset,
+                  ),
                   obscureText: true,
                   onSubmitted: (_) => _signup(),
                 ),
                 const SizedBox(height: 32),
 
-                // Signup Button
                 ElevatedButton(
                   onPressed: _isLoading ? null : _signup,
                   style: ElevatedButton.styleFrom(
@@ -221,10 +232,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
-                // Switch to Login
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -236,7 +246,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
                         );
                       },
                       child: const Text(
@@ -248,7 +260,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -270,7 +282,10 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.5), width: 1.5),
+        borderSide: BorderSide(
+          color: AppColors.primary.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
       ),
     );
   }

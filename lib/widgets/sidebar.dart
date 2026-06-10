@@ -11,12 +11,12 @@ import '../screens/history_screen.dart';
 class Sidebar extends StatelessWidget {
   final String activeRoute;
 
-  Sidebar({super.key, required this.activeRoute});
-
-  final AuthService _authService = AuthService();
+  const Sidebar({super.key, required this.activeRoute});
 
   @override
   Widget build(BuildContext context) {
+    final authService = AuthService();
+
     return Container(
       width: 250,
       decoration: BoxDecoration(
@@ -86,7 +86,9 @@ class Sidebar extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => const DashboardScreen(),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const DashboardScreen(),
                           transitionDuration: Duration.zero,
                         ),
                       );
@@ -103,7 +105,9 @@ class Sidebar extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => const AddStationScreen(),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const AddStationScreen(),
                           transitionDuration: Duration.zero,
                         ),
                       );
@@ -120,7 +124,9 @@ class Sidebar extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => const StationListScreen(),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const StationListScreen(),
                           transitionDuration: Duration.zero,
                         ),
                       );
@@ -137,7 +143,9 @@ class Sidebar extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => const HistoryScreen(),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const HistoryScreen(),
                           transitionDuration: Duration.zero,
                         ),
                       );
@@ -156,11 +164,13 @@ class Sidebar extends StatelessWidget {
               isActive: false,
               isLogout: true,
               onTap: () async {
-                await _authService.signOut();
+                await authService.signOut();
                 if (context.mounted) {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
                     (route) => false,
                   );
                 }
@@ -200,12 +210,14 @@ class _SidebarItemState extends State<_SidebarItem> {
     final color = widget.isLogout
         ? AppColors.danger
         : (widget.isActive ? AppColors.primary : AppColors.textSecondary);
-        
+
     final bgColor = widget.isActive
         ? AppColors.primary.withValues(alpha: 0.1)
-        : (_isHovering 
-            ? (widget.isLogout ? AppColors.danger.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.05))
-            : Colors.transparent);
+        : (_isHovering
+              ? (widget.isLogout
+                    ? AppColors.danger.withValues(alpha: 0.1)
+                    : Colors.white.withValues(alpha: 0.05))
+              : Colors.transparent);
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -216,27 +228,22 @@ class _SidebarItemState extends State<_SidebarItem> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOut,
-          padding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: [
-              Icon(
-                widget.icon,
-                color: color,
-                size: 22,
-              ),
+              Icon(widget.icon, color: color, size: 22),
               const SizedBox(width: 14),
               Text(
                 widget.title,
                 style: GoogleFonts.outfit(
                   color: widget.isActive ? AppColors.textMain : color,
-                  fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w500,
+                  fontWeight: widget.isActive
+                      ? FontWeight.w600
+                      : FontWeight.w500,
                   fontSize: 15,
                 ),
               ),
