@@ -27,7 +27,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void _loadHistory() {
     final user = _authService.currentUser;
     if (user != null) {
-      _historyFuture = _firestoreService.getBookingHistory(user.uid).then((docs) {
+      _historyFuture = _firestoreService.getBookingHistory(user.uid).then((
+        docs,
+      ) {
         final List<Booking> bookings = [];
         for (var doc in docs) {
           try {
@@ -52,7 +54,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       return const Scaffold(
         backgroundColor: AppColors.background,
         body: Center(
-          child: Text('Please log in', style: TextStyle(color: AppColors.textMain)),
+          child: Text(
+            'Please log in',
+            style: TextStyle(color: AppColors.textMain),
+          ),
         ),
       );
     }
@@ -85,7 +90,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             _loadHistory();
                           });
                         },
-                        icon: const Icon(Icons.refresh_rounded, color: AppColors.textSecondary),
+                        icon: const Icon(
+                          Icons.refresh_rounded,
+                          color: AppColors.textSecondary,
+                        ),
                         tooltip: 'Refresh',
                       ),
                     ],
@@ -103,9 +111,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     child: FutureBuilder<List<Booking>>(
                       future: _historyFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
-                            child: CircularProgressIndicator(color: AppColors.primary),
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
                           );
                         }
 
@@ -133,12 +144,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         }
 
                         return GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 600,
-                            mainAxisExtent: 220,
-                            crossAxisSpacing: 24,
-                            mainAxisSpacing: 24,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 600,
+                                mainAxisExtent: 220,
+                                crossAxisSpacing: 24,
+                                mainAxisSpacing: 24,
+                              ),
                           itemCount: bookings.length,
                           itemBuilder: (context, index) {
                             return _buildBookingCard(bookings[index]);
@@ -241,7 +253,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 'User: ${booking.userName} (${booking.userPhone})',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.textSecondary.withValues(alpha: 0.7),
+                                  color: AppColors.textSecondary.withValues(
+                                    alpha: 0.7,
+                                  ),
                                 ),
                               ),
                             ),
@@ -252,7 +266,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.background.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
@@ -264,16 +281,38 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.calendar_today_outlined, size: 16, color: AppColors.textSecondary),
+                              const Icon(
+                                Icons.calendar_today_outlined,
+                                size: 16,
+                                color: AppColors.textSecondary,
+                              ),
                               const SizedBox(width: 8),
-                              Text(dateStr, style: const TextStyle(color: AppColors.textMain, fontSize: 13)),
+                              Text(
+                                dateStr,
+                                style: const TextStyle(
+                                  color: AppColors.textMain,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ],
                           ),
                           Row(
                             children: [
-                              const Icon(Icons.access_time_outlined, size: 16, color: AppColors.textSecondary),
+                              const Icon(
+                                Icons.access_time_outlined,
+                                size: 16,
+                                color: AppColors.textSecondary,
+                              ),
                               const SizedBox(width: 8),
-                              Text(booking.timeSlot.isNotEmpty ? booking.timeSlot : 'N/A', style: const TextStyle(color: AppColors.textMain, fontSize: 13)),
+                              Text(
+                                booking.timeSlot.isNotEmpty
+                                    ? booking.timeSlot
+                                    : 'N/A',
+                                style: const TextStyle(
+                                  color: AppColors.textMain,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -286,16 +325,37 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.timelapse_outlined, size: 16, color: AppColors.textSecondary),
+                              const Icon(
+                                Icons.timelapse_outlined,
+                                size: 16,
+                                color: AppColors.textSecondary,
+                              ),
                               const SizedBox(width: 8),
-                              Text('${booking.hours} Hours', style: const TextStyle(color: AppColors.textMain, fontSize: 13)),
+                              Text(
+                                '${booking.hours} Hours',
+                                style: const TextStyle(
+                                  color: AppColors.textMain,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ],
                           ),
                           Row(
                             children: [
-                              const Icon(Icons.wallet_outlined, size: 16, color: AppColors.textSecondary),
+                              const Icon(
+                                Icons.wallet_outlined,
+                                size: 16,
+                                color: AppColors.textSecondary,
+                              ),
                               const SizedBox(width: 8),
-                              Text('₹${booking.totalPrice.toStringAsFixed(0)}', style: const TextStyle(color: AppColors.textMain, fontSize: 13, fontWeight: FontWeight.bold)),
+                              Text(
+                                '₹${booking.totalPrice.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                  color: AppColors.textMain,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         ],

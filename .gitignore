@@ -17,6 +17,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+.vscode/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -27,6 +28,7 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
@@ -54,6 +56,19 @@ lib/firebase_options.dart
 # Files and directories created by pub
 .packages
 build/
+/assets/
+/canvaskit/
+/icons/
+/favicon.png
+/flutter.js
+/flutter_bootstrap.js
+/flutter_service_worker.js
+/index.html
+/main.dart.js
+/manifest.json
+/version.json
+/.last_build_id
+out.txt
 # If you're building an application, you may want to check-in your pubspec.lock
 # pubspec.lock
 
@@ -72,4 +87,3 @@ doc/api/
 *.js.deps
 *.js.map
 
-.flutter-plugins

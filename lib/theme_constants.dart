@@ -20,7 +20,7 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   static const Color success = Color(0xFF22C55E);
   static const Color warning = Color(0xFFFFC400); // Amber for pending status
-  
+
   // Danger/Delete (mapped to error)
   static const Color danger = error;
   static const Color textMain = textPrimary;

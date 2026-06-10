@@ -1,12 +1,12 @@
 {
-    "name": "amptrail_adminpanel",
-    "short_name": "amptrail_adminpanel",
+    "name": "AmpTrail Admin Panel",
+    "short_name": "AmpTrail Admin",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#0F172A",
+    "theme_color": "#00E676",
+    "description": "Flutter web admin panel for AmpTrail EV charging operations.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

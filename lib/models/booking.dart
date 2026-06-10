@@ -1,12 +1,8 @@
+import 'dart:developer' as developer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum BookingStatus {
-  pending,
-  accepted,
-  rejected,
-  completed,
-  cancelled,
-}
+enum BookingStatus { pending, accepted, rejected, completed, cancelled }
 
 class Booking {
   final String id;
@@ -82,14 +78,20 @@ class Booking {
         hours: parseInt(data['hours'], 0),
         totalPrice: parseDouble(data['totalPrice'], 0.0),
         status: BookingStatus.values.firstWhere(
-          (e) => e.toString().split('.').last == (data['status']?.toString() ?? 'pending'),
+          (e) =>
+              e.toString().split('.').last ==
+              (data['status']?.toString() ?? 'pending'),
           orElse: () => BookingStatus.pending,
         ),
         rejectionReason: data['rejectionReason']?.toString(),
         portNumber: parseInt(data['portNumber'], 1),
       );
     } catch (e) {
-      print("Error parsing Booking ${doc.id}: $e");
+      developer.log(
+        'Error parsing booking ${doc.id}',
+        error: e,
+        name: 'Booking',
+      );
       rethrow;
     }
   }

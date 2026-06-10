@@ -23,7 +23,10 @@ class _StationListScreenState extends State<StationListScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Delete Station', style: TextStyle(color: AppColors.textMain)),
+        title: const Text(
+          'Delete Station',
+          style: TextStyle(color: AppColors.textMain),
+        ),
         content: const Text(
           'Are you sure you want to delete this station?',
           style: TextStyle(color: AppColors.textSecondary),
@@ -31,11 +34,17 @@ class _StationListScreenState extends State<StationListScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: AppColors.danger)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.danger),
+            ),
           ),
         ],
       ),
@@ -58,7 +67,8 @@ class _StationListScreenState extends State<StationListScreen> {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => AddStationScreen(stationToEdit: station),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            AddStationScreen(stationToEdit: station),
         transitionDuration: Duration.zero,
       ),
     );
@@ -72,7 +82,10 @@ class _StationListScreenState extends State<StationListScreen> {
       return const Scaffold(
         backgroundColor: AppColors.background,
         body: Center(
-          child: Text('Please log in', style: TextStyle(color: AppColors.textMain)),
+          child: Text(
+            'Please log in',
+            style: TextStyle(color: AppColors.textMain),
+          ),
         ),
       );
     }
@@ -113,15 +126,22 @@ class _StationListScreenState extends State<StationListScreen> {
                       child: StreamBuilder<List<Station>>(
                         stream: _firestoreService.getStationsByOwner(user.uid),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator(color: AppColors.primary));
+                              child: CircularProgressIndicator(
+                                color: AppColors.primary,
+                              ),
+                            );
                           }
 
                           if (snapshot.hasError) {
                             return Center(
-                                child: Text('Error: ${snapshot.error}',
-                                    style: const TextStyle(color: AppColors.danger)));
+                              child: Text(
+                                'Error: ${snapshot.error}',
+                                style: const TextStyle(color: AppColors.danger),
+                              ),
+                            );
                           }
 
                           final stations = snapshot.data ?? [];
@@ -143,7 +163,9 @@ class _StationListScreenState extends State<StationListScreen> {
                             child: SingleChildScrollView(
                               child: Theme(
                                 data: Theme.of(context).copyWith(
-                                  dividerColor: Colors.white.withValues(alpha: 0.1),
+                                  dividerColor: Colors.white.withValues(
+                                    alpha: 0.1,
+                                  ),
                                 ),
                                 child: DataTable(
                                   headingTextStyle: const TextStyle(
@@ -163,50 +185,71 @@ class _StationListScreenState extends State<StationListScreen> {
                                   ],
                                   rows: stations.map((station) {
                                     final dateStr = station.createdAt != null
-                                        ? DateFormat('MMM dd, yyyy')
-                                            .format(station.createdAt!)
+                                        ? DateFormat(
+                                            'MMM dd, yyyy',
+                                          ).format(station.createdAt!)
                                         : 'N/A';
 
-                                    return DataRow(cells: [
-                                      DataCell(Text(station.stationName)),
-                                      DataCell(
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          child: Text(
-                                            station.chargerType,
-                                            style: const TextStyle(color: AppColors.primary, fontSize: 12),
+                                    return DataRow(
+                                      cells: [
+                                        DataCell(Text(station.stationName)),
+                                        DataCell(
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              station.chargerType,
+                                              style: const TextStyle(
+                                                color: AppColors.primary,
+                                                fontSize: 12,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      DataCell(Text(
-                                          '${station.availablePorts} / ${station.totalPorts}')),
-                                      DataCell(Text('₹${station.pricePerUnit}')),
-                                      DataCell(Text(dateStr)),
-                                      DataCell(
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.edit,
-                                                  color: Colors.blueAccent),
-                                              onPressed: () => _editStation(station),
-                                              splashRadius: 20,
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.delete,
-                                                  color: AppColors.danger),
-                                              onPressed: () =>
-                                                  _deleteStation(station.id),
-                                              splashRadius: 20,
-                                            ),
-                                          ],
+                                        DataCell(
+                                          Text(
+                                            '${station.availablePorts} / ${station.totalPorts}',
+                                          ),
                                         ),
-                                      ),
-                                    ]);
+                                        DataCell(
+                                          Text('₹${station.pricePerUnit}'),
+                                        ),
+                                        DataCell(Text(dateStr)),
+                                        DataCell(
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.edit,
+                                                  color: Colors.blueAccent,
+                                                ),
+                                                onPressed: () =>
+                                                    _editStation(station),
+                                                splashRadius: 20,
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: AppColors.danger,
+                                                ),
+                                                onPressed: () =>
+                                                    _deleteStation(station.id),
+                                                splashRadius: 20,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
                                   }).toList(),
                                 ),
                               ),
