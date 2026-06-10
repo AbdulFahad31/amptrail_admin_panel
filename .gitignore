@@ -32,7 +32,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+# /build/
 /coverage/
 
 # Symbolication related
@@ -55,7 +55,7 @@ lib/firebase_options.dart
 
 # Files and directories created by pub
 .packages
-build/
+# build/
 /assets/
 /canvaskit/
 /icons/
